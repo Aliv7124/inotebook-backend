@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 // Enable CORS for your frontend
 app.use(cors({
-  origin: ['http://localhost:5174', 'https://aliv7124.github.io'],
+  origin: ['http://localhost:5174', ' https://aliv7124.github.io/frontend/'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
