@@ -66,21 +66,19 @@ router.post('/login', [
 module.exports = router;
 
 
-
-
 */
-
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const fetchuser = require('../middleware/fetchuser');
 require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// Create a new user: POST /api/auth/createuser
+// ROUTE 1: Create a new user - POST /api/auth/createuser
 router.post('/createuser', [
   body('name').isLength({ min: 3 }),
   body('email').isEmail(),
@@ -106,11 +104,11 @@ router.post('/createuser', [
     res.json({ authtoken });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).send('Server Error');
   }
 });
 
-// Login an existing user: POST /api/auth/login
+// ROUTE 2: Authenticate a user - POST /api/auth/login
 router.post('/login', [
   body('email').isEmail(),
   body('password').exists()
@@ -133,7 +131,19 @@ router.post('/login', [
     res.json({ authtoken });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    res.status(500).send('Server Error');
+  }
+});
+
+// ROUTE 3: Get logged-in user details - POST /api/auth/userdetails
+router.post('/userdetails', fetchuser, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select('-password'); // Exclude password
+    res.send(user);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
   }
 });
 
