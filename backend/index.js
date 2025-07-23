@@ -8,7 +8,12 @@ connectToMongo();
 const app = express();
 const port = process.env.PORT || 10000;
 
-app.use(cors());
+// ✅ Enable CORS for GitHub Pages
+app.use(cors({
+  origin: 'https://aliv7124.github.io',
+  credentials: true
+}));
+
 app.use(express.json());
 
 app.use('/api/auth', require('./routes/auth'));
@@ -21,5 +26,6 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`iNotebook backend listening at http://localhost:${port}`);
 });
+
 
 
